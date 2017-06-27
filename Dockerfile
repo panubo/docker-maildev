@@ -1,4 +1,4 @@
-FROM panubo/postfix
+FROM docker.io/panubo/postfix:latest
 
 # Install packages
 RUN apt-get update && \
@@ -16,10 +16,13 @@ COPY mail.rc /etc/mail.rc
 COPY dovecot.conf /etc/dovecot/local.conf
 
 EXPOSE 143 110 80
+VOLUME ["/var/mail"]
 
 RUN \
   useradd -G mail -m catchall && \
   echo "catchall:password" | chpasswd && \
+  postconf -e mail_spool_directory="/var/mail/" && \
+  postconf -e smtpd_tls_received_header="yes" && \
   postconf -e recipient_canonical_classes="envelope_recipient" && \
   postconf -e recipient_canonical_maps="regexp:/etc/postfix/recipient_canonical_map" && \
   postconf -X mailbox_command
@@ -41,8 +44,4 @@ COPY run.sh /run.sh
 
 CMD ["/run.sh"]
 
-RUN \
-  apt-get update && \
-  apt-get install -y --no-install-recommends 
-
-
+RUN chmod 644 /etc/cron.d/maildev

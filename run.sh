@@ -1,6 +1,8 @@
 #!/bin/sh
 
-mkdir /var/spool/mail/catchall /var/spool/mail/catchall/cur /var/spool/mail/catchall/new /var/spool/mail/catchall/tmp
-chown catchall:catchall -R /var/spool/mail/catchall
+SPOOL_DIR="$(postconf mail_spool_directory | sed -E 's/.*= (.*)/\1/')"
+
+mkdir ${SPOOL_DIR}/catchall ${SPOOL_DIR}/catchall/cur ${SPOOL_DIR}/catchall/new ${SPOOL_DIR}/catchall/tmp
+chown catchall:catchall -R ${SPOOL_DIR}/catchall
 
 exec /bin/s6-svscan "/etc/s6"
