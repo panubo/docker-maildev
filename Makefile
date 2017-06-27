@@ -12,7 +12,7 @@ build:
 	docker build -t $(docker_tag) .
 
 bash:
-	docker run --rm -it -e MAILNAME=mail.example.com $(docker_tag) bash
+	docker run --rm -it -e MAILNAME=maildev.example.com $(docker_tag) bash
 
 run:
 	$(eval ID := $(shell docker run -d --name maildev -p 143:143 -p 80:80 ${docker_tag}))

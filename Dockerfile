@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV MAILNAME mail.example.com
+ENV MAILNAME maildev.example.com
 
 COPY recipient_canonical_map /etc/postfix/recipient_canonical_map
 COPY s6/dovecot /etc/s6/dovecot
