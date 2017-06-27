@@ -27,9 +27,11 @@ RUN \
   postconf -e recipient_canonical_maps="regexp:/etc/postfix/recipient_canonical_map" && \
   postconf -X mailbox_command
 
+ENV ROUNDCUBE_VERSION 1.3.0
+
 RUN \
   rm /var/www/html/index.html && \
-  curl -L 'http://downloads.sourceforge.net/project/roundcubemail/roundcubemail/1.1.4/roundcubemail-1.1.4-complete.tar.gz?r=&ts=1458622801&use_mirror=tenet' | tar -C /var/www/html --strip-components 1 -zx && \
+  curl -L "https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBE_VERSION}/roundcubemail-${ROUNDCUBE_VERSION}-complete.tar.gz" | tar -C /var/www/html --strip-components 1 -zx && \
   a2enmod rewrite deflate headers expires
 
 RUN \
