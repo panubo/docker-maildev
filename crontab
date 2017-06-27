@@ -1,1 +1,1 @@
-0 * * * * root /usr/local/bin/imaputils.pl --host localhost --user catchall --password password --box INBOX --delete --sentbefore $(($(date +\%s)-86400))
+0 * * * * root /usr/local/bin/imaputils.pl --host localhost --user catchall --password password --box INBOX --delete --sentbefore $(($(date +\%s)-86400)) >/dev/null 2>&1
