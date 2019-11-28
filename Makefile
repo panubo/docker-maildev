@@ -8,10 +8,10 @@ help:
 	@printf "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)\n"
 
 bash: ## Runs a bash shell in the docker image
-	docker run --rm -it -e MAILNAME=mail.example.com $(IMAGE_NAME):latest bash
+	docker run --rm -it -e MAILNAME=mail.example.com $(IMAGE_NAME):$(TAG) bash
 
 run: ## Runs the docker image in a test mode
-	$(eval ID := $(shell docker run -d --name postfix -e RELAYHOST=172.17.0.2 -e MAILNAME=mail.example.com -e SIZELIMIT=20480000 -e LOGOUTPUT=/var/log/maillog $(IMAGE_NAME):latest))
+	$(eval ID := $(shell docker run -d -p 8080:80 --name postfix -e RELAYHOST=172.17.0.2 -e MAILNAME=mail.example.com -e SIZELIMIT=20480000 -e LOGOUTPUT=/var/log/maillog $(IMAGE_NAME):$(TAG)))
 	$(eval IP := $(shell docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${ID}))
 	@echo "Running ${ID} @ smtp://${IP}"
 	@docker attach ${ID}
