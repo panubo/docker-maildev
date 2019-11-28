@@ -1,8 +1,8 @@
-FROM docker.io/panubo/postfix:latest
+FROM docker.io/panubo/postfix:buster
 
 # Install packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends dovecot-core dovecot-imapd dovecot-pop3d heirloom-mailx apache2 libapache2-mod-php5 php5-imap php5-sqlite libmail-imapclient-perl libio-socket-ssl-perl libdatetime-format-mail-perl libgetopt-long-descriptive-perl bzip2 cron && \
+    apt-get install -y --no-install-recommends dovecot-core dovecot-imapd dovecot-pop3d bsd-mailx apache2 libapache2-mod-php php-imap php-sqlite3 libmail-imapclient-perl libio-socket-ssl-perl libdatetime-format-mail-perl libgetopt-long-descriptive-perl bzip2 cron && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
