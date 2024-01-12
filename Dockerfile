@@ -1,4 +1,4 @@
-FROM docker.io/panubo/postfix:buster
+FROM quay.io/panubo/postfix:1.5
 
 # Install packages
 RUN apt-get update && \
@@ -27,7 +27,7 @@ RUN \
   postconf -e recipient_canonical_maps="regexp:/etc/postfix/recipient_canonical_map" && \
   postconf -X mailbox_command
 
-ENV ROUNDCUBE_VERSION 1.4.1
+ENV ROUNDCUBE_VERSION 1.6.5
 
 RUN \
   rm /var/www/html/index.html && \
@@ -44,5 +44,9 @@ COPY autologon.php /var/www/html/plugins/autologon/autologon.php
 COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
 COPY crontab /etc/cron.d/maildev
 COPY run.sh /run.sh
+
+RUN set -x \
+  && chmod 644 /etc/cron.d/maildev \
+  ;
 
 CMD ["/run.sh"]

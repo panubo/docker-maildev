@@ -11,7 +11,12 @@ bash: ## Runs a bash shell in the docker image
 	docker run --rm -it -e MAILNAME=mail.example.com $(IMAGE_NAME):$(TAG) bash
 
 run: ## Runs the docker image in a test mode
-	$(eval ID := $(shell docker run -d -p 8080:80 --name postfix -e RELAYHOST=172.17.0.2 -e MAILNAME=mail.example.com -e SIZELIMIT=20480000 -e LOGOUTPUT=/var/log/maillog $(IMAGE_NAME):$(TAG)))
+	$(eval ID := $(shell docker rm -f $(NAME) >/dev/null 1>&2; docker run -d -p 8080:80 --name $(NAME) \
+		--hostname maildev.example.com \
+		-e MAILNAME=maildev.example.com \
+		-e SIZELIMIT=20480000 \
+		-e POSTCONF=disable_dns_lookups=yes \
+		$(IMAGE_NAME):$(TAG)))
 	$(eval IP := $(shell docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${ID}))
 	@echo "Running ${ID} @ smtp://${IP}"
 	@docker attach ${ID}
