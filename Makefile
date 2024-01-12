@@ -30,3 +30,6 @@ push: ## Pushes the docker image to hub.docker.com
 
 clean: ## Remove built image
 	docker rmi $(IMAGE_NAME):$(TAG)
+
+_ci_test:
+	true
