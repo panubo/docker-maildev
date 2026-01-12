@@ -1,9 +1,102 @@
-## Development Mail Server
+# Development Mail Server
 
-The purpose of this image to to emulate a Postfix/mail server but never actually send any mail out to the world. This is useful when developing web applications which are expected to send mail but you don't want them to accidentally mail real users or if you wish to inspect the mail that the application would normally send out.
+A Docker image that runs a complete mail server stack, perfect for development and testing. It's designed to be a catch-all server that receives emails for any address and displays them in a web interface. It **does not** send any mail out to the internet.
 
-The image comes with Roundcube installed and running on port 80 which collects the outbound mail. Mail is cleaned up after 24 hours.
+This image includes:
 
-## Authentication
+- Postfix as a mail transfer agent (MTA).
+- Dovecot for IMAP and POP3 access.
+- Apache with PHP to serve the webmail client.
+- Roundcube as a webmail client to view emails.
+- A cron job that cleans up emails older than 24 hours.
 
-There is no authentication required for all services.
+## Features
+
+- Catch-all email server for any domain.
+- Web-based email access with Roundcube.
+- IMAP and POP3 access to emails.
+- Automatic cleanup of old emails.
+- Configurable via environment variables.
+
+## Getting Started
+
+This guide provides instructions on how to build and run the Docker image using either the provided `Makefile` or standard `docker` commands.
+
+### Using Makefile
+
+The `Makefile` provides convenience targets for common operations.
+
+1.  **Build the image:**
+    ```sh
+    make build
+    ```
+
+2.  **Run the container:**
+    To run the container for development or testing, which exposes the web interface on port `8080`:
+    ```sh
+    make run
+    ```
+    This command will attach to the container's output. You can detach with `Ctrl+C`.
+
+## Accessing Emails
+
+### Web Interface
+The captured emails are available through the Roundcube web interface. If you followed the "Getting Started" example, it will be available at [http://localhost:8080](http://localhost:8080).
+
+The interface uses an autologin plugin, so no username or password is required.
+
+### SMTP, IMAP & POP3
+
+To configure your application, use `localhost` (or your Docker host IP) as the server and the ports you exposed.
+
+- **SMTP server**: `localhost` on port `1025` (no authentication required).
+- **IMAP server**: `localhost` on port `1143` (user: `catchall`).
+- **POP3 server**: `localhost` on port `1110` (user: `catchall`).
+
+## Configuration
+
+### Main Environment Variables
+
+| Variable    | Description                                                                                                   | Default                   |
+|-------------|---------------------------------------------------------------------------------------------------------------|---------------------------|
+| `MAILNAME`  | The mail domain for the server. This is used by Postfix in its configuration.                                 | `maildev.example.com`     |
+| `SIZELIMIT` | The maximum size of an email in bytes.                                                                        | `20480000` (20MB)         |
+| `POSTCONF`  | A space-separated list of Postfix configuration directives. For example `disable_dns_lookups=yes`.            | `(empty)`                 |
+
+See [panubo/docker-postfix](https://github.com/panubo/docker-postfix?tab=readme-ov-file#environment-variables) for more configuration options.
+
+### Volumes
+
+| Path         | Description                                     |
+|--------------|-------------------------------------------------|
+| `/var/mail`  | The directory where emails are stored.          |
+
+## Ports
+
+| Port  | Protocol | Description        |
+|-------|----------|--------------------|
+| 25    | SMTP     | Mail submission    |
+| 80    | HTTP     | Roundcube webmail  |
+| 110   | POP3     | Email access       |
+| 143   | IMAP     | Email access       |
+
+## Development
+
+The `Makefile` contains several targets for common development tasks.
+
+- `make build`: Build the Docker image.
+- `make run`: Run the container for testing the web interface.
+- `make bash`: Get a bash shell inside a running container.
+- `make clean`: Remove the built image.
+
+See the `Makefile` for more details and other available targets.
+
+## Releases
+
+Please use a versioned release rather than the floating 'latest' tag.
+
+See the releases for tag usage and release notes.
+
+## Status
+
+Development ready and stable.
