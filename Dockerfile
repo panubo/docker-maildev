@@ -1,4 +1,4 @@
-FROM quay.io/panubo/postfix:1.6
+FROM quay.io/panubo/postfix:1.7
 
 # Install packages
 RUN set -x \
@@ -11,7 +11,6 @@ RUN set -x \
     apache2 \
     libapache2-mod-php \
     php-dom \
-    php-imap \
     php-mbstring \
     php-sqlite3 \
     php-intl \
@@ -48,7 +47,7 @@ RUN set -x \
   && echo "ssl = no" > /etc/dovecot/conf.d/10-ssl.conf \
   ;
 
-ENV ROUNDCUBE_VERSION 1.6.5
+ENV ROUNDCUBE_VERSION 1.6.12
 
 RUN set -x \
   && rm /var/www/html/index.html \
